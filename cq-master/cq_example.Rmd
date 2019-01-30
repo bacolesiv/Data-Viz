@@ -44,31 +44,19 @@ calc_age <- function(birth_date, ref_date = Sys.Date(), unit = "year") {
 
 ```
 
-
-
 # CQ Data
-
-
 ## Load it
-
-```{r load}
-
+```{r load, include=FALSE}
 filenames <- dir(path = "data/clean",
                  pattern = "*.csv",
                  full.names = TRUE)
-
 filenames
-
 data <- filenames %>% map_dfr(read_csv, .id = "congress")
-
 data <- clean_names(data)
-
 ```
 
 ## Recodes
-
 ```{r recoding-1}
-
 ## The start and end and other date variables are CQ's and coded 01/03/1945 (i.e. m/d/y)
 ## We use lubridate's mdy() to convert them to date objects.
 data <- data %>% 
@@ -76,7 +64,6 @@ data <- data %>%
          end = mdy(end), 
          born = mdy(born), 
          death = mdy(death))
-
 sessions <- as_tibble(data.frame(congress = 79:116,
                        start_year = seq(1945, 2019, by = 2),
                        end_year = seq(1947, 2021, by = 2)))
@@ -84,26 +71,20 @@ sessions <- as_tibble(data.frame(congress = 79:116,
 sessions <- sessions %>% 
   mutate(start_year = int_to_year(start_year, "01", "03"),
          end_year = int_to_year(end_year, "01", "03"))
-
-
 data <- data %>% 
   mutate(congress = as.numeric(congress) + 78)
-
 data
 ```
 
 
 ```{r jwervin}
-
 data$born[data$last == "Ervin" & data$first == "Joseph"] <- ymd("1901-03-01")
-
 ```
 
 Join sessions to main data.
 
 ```{r sessions}
 data <- left_join(data, sessions)
-
 
 ## Character Vector of all name-dob combinations 
 data <- data %>% 
@@ -156,27 +137,46 @@ data <- data[-ind,]
 - `yr_fac`: start_year as a factor rather than a date
 
 ```{r newvariables}
+#data$poc <- recode(data$race, "White" = "White"", .default = "Non-White") like an if else statement gives white if yes, poc otherwise 
 
 data <- data %>% 
   mutate(poc = recode(race, "White" = "White", .default = "Non-White"),
-         days_old = calc_age(born, start_year, "day"),
+         days_old = calc_age(born, start_year, "day"), 
          months_old = calc_age(born, start_year, "month"),
          full_name = paste(first, last, suffix),
          entry_age = calc_age(born, start),
          yr_fac = factor(year(start_year)))
-
-
 ```
+
+## poc: Person of color; binary
+data$poc <- recode(data$race, "White" = "White", .default = "Non-White")
+
+## days_old: N days old
+data  <- data %>% mutate(days_old = calc_age(born, start_year, "day"))
+
+## months_old: N months old
+data  <- data %>% mutate(months_old = calc_age(born, start_year, "month"))
+
+## full_name: Full Name
+data  <- data %>% mutate(full_name = paste(first, last, suffix))
+
+## end_career: Date of end career
+data  <- data %>% mutate(end_career = mdy(end))
+
+## entry_age:  Age when first entered congress
+data <- data %>% mutate(entry_age = calc_age(born, start))
+
+## yr_fac: start_year as a factor rather than a date
+data$yr_fac <- factor(year(data$start_year))
 
 ```{r cleanwrite}
 
-write_csv(data, "data/generated/congress79_116.csv")
+write_csv(data, "data/congress79_116.csv")
 
 ```
 
 
 ```{r}
-
 mean_age <- data %>% filter(position == "U.S. Representative") %>%
     group_by(congress) %>%
     summarize(year = first(start_year), mean_age = mean(start_age, na.rm = TRUE))
@@ -186,7 +186,61 @@ data %>% filter(position == "U.S. Representative",
     group_by(congress, sex, party) %>%
     summarize(year = first(start_year), mean_age = mean(start_age)) %>%
     filter(congress == 100)
-
-
 ```
+
+```{r}
+#Median age of representatives, by congress
+median.age.rep <- data %>%
+  filter(position == "U.S. Representative") %>%
+  group_by(congress) %>%
+  summarize(year = first(start_year), median.age = median(start_age, na.rm = T))
+
+#Mean age of senators, by congress
+mean.age.sen <- data %>% 
+  filter(position == "U.S. Senator") %>%
+  group_by(congress) %>%
+  summarize(year = first(start_year), mean_age = mean(start_age, na.rm = T))
+
+#Mean age of senators, by congress & party 
+mean.age.scp <- data %>% 
+  filter(position == "U.S. Senator") %>%
+  group_by(congress, party) %>%
+  summarize(year = first(start_year), mean_age = mean(start_age, na.rm = T))
+
+#Age of oldest senator, by congress & party 
+old.sen <- data %>% 
+  filter(position == "U.S. Senator") %>%
+  group_by(congress, party) %>%
+  summarise(oldest = max(start_age, na.rm = T))
+ 
+#Age of youngest representative, by congress & party 
+young.rep <- data %>% 
+  filter(position == "U.S. Representative") %>%
+  group_by(congress, party) %>%
+  summarise(youngest = min(start_age, na.rm = T))
+
+#Count of N representatives for each congress, by party
+count.rep <- data %>%
+  filter(position == "U.S. Representative") %>%
+  group_by(congress, party) %>%
+  count()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
