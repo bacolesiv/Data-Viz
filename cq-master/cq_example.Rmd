@@ -21,6 +21,7 @@ library(tidyverse)
 library(janitor)
 library(lubridate)
 library(socviz)
+library(gapminder)
 
 ```
 
@@ -228,13 +229,30 @@ count.rep <- data %>%
 #Frequency Table for Representatives, by Gender
 gender <- data %>%
   filter(position == "U.S. Representative")
-
 mytable <- table(gender$congress, gender$sex)
 prop.table(mytable, 1)
+
+#Class: January 31, 2018 starts here 
+
+#How to do the table in Tidyr 
+tidypct <- data %>%
+  select(congress, sex) %>%
+  group_by(congress, sex) %>%
+  summarize(n = n()) %>%
+  mutate(pct = (n/sum(n))*100)
+tidypct
+
+#top_n function will give you N maximum values from the variable 
+#Example from class: gives you the top three job types before joining congress for each congress (originally start_year)
+class.example <- data %>%
+  select(congress, job_type1) %>%
+  group_by(congress, job_type1) %>%
+  summarise(n = n()) %>%
+  mutate(pct = (n/sum(n)) * 100) %>%
+  group_by(congress) %>%
+  top_n(3, wt = pct) %>%
+  arrange(desc(pct), .by_group = T) #arrange doesnt respect group_by have to tell it to 
 ```
-
-
-
 
 attach(mydata)
 mytable <- table(A,B) # A will be rows, B will be columns 
@@ -247,8 +265,60 @@ prop.table(mytable) # cell percentages
 prop.table(mytable, 1) # row percentages 
 prop.table(mytable, 2) # column percentages
 
+Using Gapminder & Producing Tables
+```{r}
+gapminder #just data doesnt come with functions? #library(readxl) provides functions for reading excel data 
 
+edu #data from the socviz package #messy because years of schooling is split into like 5 varaibles 
 
+#Using gather() and spread() to consolidate the data 
+edu_t <- edu %>%
+  gather(key = years.school, #creates new column years.school and puts the variables you want to gather in the cells
+         value = freq, #will give counts for each category
+         elem4:coll4) # what variables you want to gather
+dim(edu_t) #2196 rows X 7 columns = long data 
+dim(edu) #366 rows X 11 columns = compact data for display 
+```
+
+Table Joins
+```{r}
+#Conceptually its just merging tables 
+
+#*left*_join() preserves values from the *left* table - things from the right with no matching columns will get NA's
+
+#inner_join analogus to the intersection of the data so the only thing preserved is what they share not whats on the left or right
+
+#full_join keeps everything from both - union that preserves everything
+
+#anti_join & semi_join filtering joins
+
+#Question 6 from Slack problems requires a join
+
+senate <- data %>%
+  filter(position == "U.S. Senator") %>%
+  group_by(pid) %>% #the variable that uniquely identifies the congress people
+  summarise(first = first(first),
+            last = first(last),
+            party = first(party),
+            state = first(state),
+            start = first(start),
+            end = first(end))
+house <- data %>%
+  filter(position == "U.S. Representative") %>%
+  group_by(pid) %>% #matching variable 
+  summarise(first = first(first), 
+            last = first(last), 
+            start = first(start),
+            end = first(end))
+
+sen.house <- inner_join(senate, house, by = "pid") #matching variable used in by arguement here #anti_join would exclude people who have served in both the house and the senate
+  
+#stringr - str_detect(string, patter) - str_replace(string, pattern, replacement) these functions are pipeable
+#string = variable - pattern = value - replacement = replace value 
+#str_remove(variable, "value to delete") - useful for handling missing data? " NA$" kieran said use this in the "value to delete" 
+#There is a link to exercises with regular expression on slack socviz 
+#mac book patterns app -> test bed for regular expressions -> shows you what youre finding/replacing 
+```
 
 
 
