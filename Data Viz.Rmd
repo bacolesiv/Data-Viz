@@ -1,0 +1,31 @@
+---
+title: "Data Viz"
+author: "Bernard A. Coles IV"
+date: "2/14/2019"
+output: html_document
+---
+
+```{r}
+library(janitor)
+```
+
+clean_names(read_csv("data/prison_jail_1970_2016.csv")) the clean_names() changes things to lower case and underscores. It also helps to detect columns that contain numbers & spaces -> Good practice for uploading
+
+gather() -> useful for making edgelists: (x = "key", y = "value", key = range of columns for series) Key(series, nodes) & value(counts, edges) are like creating two new columns -> think of it as narrowing the data table 
+
+first step for working with new data is to try and reproduce the counts from the codebooks
+
+vis_dat(<data.frame>) gives a cool map showing rough counts of missing data across variables and their class
+
+gg_miss_var(<data.frame>) visualizes the missing data per variable
+gg_miss_upset() visualized the missing data in a bar chart 
+gg_miss_fct(x = data , fct = categorical variable) shows missing data across the categories of another variable  
+
+miss_var_summary() missingness in columns -> variables
+miss_case_summary() missingness in rows -> respondents 
+*you can pipe these two functions at the end of a summary table for missingness 
+
+Github repository -> The Quartz Guide to Bad Data : "Quartz/bad-data-guide"
+
+naniar package contains replace_with_na() and useful vingettes on their website for handling missing data 
+

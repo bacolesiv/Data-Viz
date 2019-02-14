@@ -320,7 +320,14 @@ sen.house <- inner_join(senate, house, by = "pid") #matching variable used in by
 #mac book patterns app -> test bed for regular expressions -> shows you what youre finding/replacing 
 ```
 
+###February 14, 2019 
+```{r}
+#Missing Data
+library(naniar)
+library(visdat)
 
+vis_dat(data)
+```
 
 
 
