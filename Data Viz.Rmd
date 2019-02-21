@@ -5,10 +5,6 @@ date: "2/14/2019"
 output: html_document
 ---
 
-```{r}
-library(janitor)
-```
-
 clean_names(read_csv("data/prison_jail_1970_2016.csv")) the clean_names() changes things to lower case and underscores. It also helps to detect columns that contain numbers & spaces -> Good practice for uploading
 
 gather() -> useful for making edgelists: (x = "key", y = "value", key = range of columns for series) Key(series, nodes) & value(counts, edges) are like creating two new columns -> think of it as narrowing the data table 
@@ -28,4 +24,49 @@ miss_case_summary() missingness in rows -> respondents
 Github repository -> The Quartz Guide to Bad Data : "Quartz/bad-data-guide"
 
 naniar package contains replace_with_na() and useful vingettes on their website for handling missing data 
+
+packrat - package that preserves the versions of packages you used to create your markdown 
+
+sessionInfo() will tell you which packages are running as well as other plateform info so like you OS, etc. 
+
+<function>_if() take action on a subset of variables such as class. This is called scoping if you need to google arguements (scope helpers)
+example: summary_if(is.numeric(mydata))
+
+matches() function might be useful for edgelist and node matching over aidr
+
+select(world, everything()) will move the world column to the front. column shuffle 
+
+filter_all(any_vars(is.na(.))) show me rows where there is missing data 
+
+rowwise() can perform operations across rows which is useful creating new variables
+
+```{r}
+library(socviz)
+library(tidyverse)
+library(purrr)
+
+data("organdata")
+
+organdata %>%
+  group_by(world) %>%
+  summarize_if(is.numeric, mean, na.rm = T) %>%
+  select(world, donors, pubhealth, roads) %>%
+  select_all(tools::toTitleCase)
+
+organdata %>%
+  group_by(country) %>%
+  summarize_if(is.numeric, funs(ave = mean, sd = sd), na.rm = T) %>% #funs(is similar to mutate but for creating colomns for means sds, etc)
+  select(country, donors_avg, donors_sd, roads_avg, roads_sd) %>%
+  arrange(desc(donors_avg))
+
+out <- lm(donors ~ pop + gdp + roads, data = organdata)
+
+#map is similar to the apply functions: iterates over all cases 
+organdata %>%
+  split(.$world) %>% #used split so thqt we didnt have to enclose all the maps in a mutate function 
+  map(~lm(donors ~ pop + gdp + roads, data = .)) %>%
+  map(summary) %>%
+  map_dbl("r.squared")
+
+```
 
