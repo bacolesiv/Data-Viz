@@ -1,0 +1,24 @@
+;; RefTeX parse info file
+;; File: /Users/kjhealy/Documents/courses/dataviz/dataviz/README.md
+;; User: kjhealy (Kieran Healy)
+
+(set reftex-docstruct-symbol '(
+
+
+(xr nil "\\\\\\\\\\\\")
+
+(index-tags)
+
+(is-multi nil)
+
+(bibview-cache)
+
+(master-dir . "/Users/kjhealy/Documents/courses/dataviz/dataviz/")
+
+(label-numbers)
+
+(bof "/Users/kjhealy/Documents/courses/dataviz/dataviz/README.md")
+
+(eof "/Users/kjhealy/Documents/courses/dataviz/dataviz/README.md")
+))
+

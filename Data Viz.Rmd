@@ -67,6 +67,56 @@ organdata %>%
   map(~lm(donors ~ pop + gdp + roads, data = .)) %>%
   map(summary) %>%
   map_dbl("r.squared")
-
 ```
+
+###Class Notes - February 28, 2019
+```{r}
+library(socviz)
+#setup_course_notes() all the code in the book by chapter - already downloaded
+library(tidyverse)
+library(devtools)
+library(fs)
+library(gapminder) #will be working with gapminder data
+gapminder
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
