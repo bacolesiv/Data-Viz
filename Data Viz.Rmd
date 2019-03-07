@@ -40,6 +40,10 @@ filter_all(any_vars(is.na(.))) show me rows where there is missing data
 
 rowwise() can perform operations across rows which is useful creating new variables
 
+every single map arguement in ggplot has a scale and they can conflict 
+
+ggrepel is a good package for using text on plots 
+
 ```{r}
 library(socviz)
 library(tidyverse)
@@ -63,7 +67,7 @@ out <- lm(donors ~ pop + gdp + roads, data = organdata)
 
 #map is similar to the apply functions: iterates over all cases 
 organdata %>%
-  split(.$world) %>% #used split so thqt we didnt have to enclose all the maps in a mutate function 
+  split(.$world) %>% #used split so that we didnt have to enclose all the maps in a mutate function 
   map(~lm(donors ~ pop + gdp + roads, data = .)) %>%
   map(summary) %>%
   map_dbl("r.squared")
@@ -80,6 +84,20 @@ library(gapminder) #will be working with gapminder data
 gapminder
 ```
 
+###Class Notes - March 07, 2018
+```{r}
+a <- ggplot(data = gapminder, mapping = aes(x = year, y = gdpPercap)) +
+  geom_line(color = "gray70", mapping = aes(group = country)) + 
+  geom_smooth(size = 1.1, method = "loess", se = F) + 
+  scale_y_log10(labels = scales::dollar) +
+  facet_wrap(~ continent, ncol = 5)
+a
+
+b <- ggplot(data = gss_sm, mapping = aes(x = bigregion)) +
+  geom_bar(mapping = aes(y = ..prop..))
+
+
+```
 
 
 
