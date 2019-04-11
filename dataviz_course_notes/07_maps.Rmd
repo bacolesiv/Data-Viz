@@ -22,9 +22,9 @@ library(socviz)
 ## Map U.S. state-level data
 
 ```{r 07-maps-1}
-election %>% select(state, total_vote,
-                    r_points, pct_trump, party, census) %>%
-    sample_n(5)
+election %>% 
+  dplyr::select(state, total_vote, r_points, pct_trump, party, census) %>%
+  sample_n(5)
 ```
 
 
@@ -43,7 +43,7 @@ p1 <- p0 + geom_vline(xintercept = 0, color = "gray30") +
 
 p2 <- p1 + scale_color_manual(values = party_colors)
 
-p3 <- p2 + scale_x_continuous(breaks = c(-30, -20, -10, 0, 10, 20, 30, 40),
+p3 <- p2 + scale_x_continuous(breaks = c(-30, -20, -10, 0, 10, 20, 30, 40), #
                               labels = c("30\n (Clinton)", "20", "10", "0",
                                          "10", "20", "30", "40\n(Trump)"))
 
@@ -96,10 +96,8 @@ p + geom_polygon(color = "gray90", size = 0.1) +
 ```
 
 ```{r 07-maps-7}
-
 election$region <- tolower(election$state)
 us_states_elec <- left_join(us_states, election)
-
 ```
 
 
@@ -116,12 +114,14 @@ p + geom_polygon(color = "gray90", size = 0.1) +
 
 
 ```{r 07-maps-9}
+#Strictly design elements for your visualiations 
+#This seems usfual once you find a theme that works for you. Perhaps the one from Biso? 
 
 theme_map <- function(base_size=9, base_family="") {
     require(grid)
     theme_bw(base_size=base_size, base_family=base_family) %+replace%
-        theme(axis.line=element_blank(),
-              axis.text=element_blank(),
+        theme(axis.line=element_blank(), #Element blank just turns off the theme but you can put whatever you want there 
+              axis.text=element_blank(), #Usful for geography so you can remove unecessary lines from coordinates, etc. 
               axis.ticks=element_blank(),
               axis.title=element_blank(),
               panel.background=element_blank(),
@@ -190,7 +190,7 @@ p3 + theme_map() + labs(fill = "Percent")
 ```{r 07-maps-12, fig.cap='A Purple America version of Trump vs Clinton that excludes results from Washington, DC.', out.width="100%", fig.width=6, fig.height=5}
 
 p0 <- ggplot(data = subset(us_states_elec,
-                           region %nin% "district of columbia"),
+                           region %nin% "district of columbia"), #removing DC from the data "%not in %"
              aes(x = long, y = lat, group = group, fill = d_points))
 
 p1 <- p0 + geom_polygon(color = "gray90", size = 0.1) +
@@ -212,7 +212,7 @@ county_map %>% sample_n(5)
 
 ```{r county2}
 county_data %>%
-    select(id, name, state, pop_dens, pct_black) %>%
+    dplyr::select(id, name, state, pop_dens, pct_black) %>%
     sample_n(5)
 ```
 

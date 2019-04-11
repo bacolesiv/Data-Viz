@@ -17,6 +17,14 @@ library(tidyverse)
 library(socviz)
 ```
 
+```{r}
+out <- lm(lifeExp ~ gdpPercap + pop + continent, gapminder)
+out.log <- lm(lifeExp ~ log(gdpPercap) + pop + continent, gapminder)
+
+summary(out)
+summary(out.log)
+str(out)
+```
 
 ```{r model1}
 p <- ggplot(data = gapminder,
@@ -33,6 +41,8 @@ p + geom_point(alpha=0.1) +
 p + geom_point(alpha=0.1) +
     geom_quantile(color = "tomato", size = 1.2, method = "rqss",
                   lambda = 1, quantiles = c(0.20, 0.5, 0.85))
+
+
 ```
 
 ```{r model2}
@@ -122,9 +132,10 @@ head(pred_df)
 
 pred_out <- predict(object = out,
                     newdata = pred_df,
-                    interval = "predict")
+                    interval = "predict") # gives lower and upper bounds
 head(pred_out)
-
+     
+ ""
 ```
 
 ```{r 06-models-6}

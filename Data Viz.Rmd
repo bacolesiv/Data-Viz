@@ -44,6 +44,11 @@ every single map arguement in ggplot has a scale and they can conflict
 
 ggrepel is a good package for using text on plots 
 
+gghightlight <- make certain features of the plot stand out from the rest 
+
+facet_wrap( *reorder*(grouping), *value ordered on*)
+facet_grid <- plots all of the groups overlapping on a single plot
+
 ```{r}
 library(socviz)
 library(tidyverse)
@@ -99,10 +104,29 @@ b <- ggplot(data = gss_sm, mapping = aes(x = bigregion)) +
 
 ```
 
+###Class Notes - March 21, 2019 
 
+#survey package 
 
+#Maps: conceptually separating these steps into functional domains, easy to learn where to look for fixing a problem
 
+```{r}
+data(election)
 
+election %>% 
+  dplyr::select(state, total_vote, r_points, pct_trump, party, census) %>%
+  sample_n(5)
+
+setup_course_notes() #map.rmd <- notes from class in this file in the repository
+```
+
+```{r}
+names <- nyc_license %>%
+  group_by(borough) %>%
+  tally() %>%
+  mutate(freq = n / sum(n), pct = round(freq*100, 2)) %>%
+  filter(animal_name != "Unknown")
+```
 
 
 
