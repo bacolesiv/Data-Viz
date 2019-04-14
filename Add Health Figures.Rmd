@@ -17,15 +17,15 @@ library(knitr)
 library(broom)
 
 #Windows
-load("E:/Repository/Biso/Biso/data/wave1.rda")
-load("E:/Repository/Biso/Biso/data/network.wave1.rda")
-load("E:/Repository/Biso/Biso/data/weights.rda")
+#load("E:/Repository/Biso/Biso/data/wave1.rda")
+#load("E:/Repository/Biso/Biso/data/network.wave1.rda")
+#load("E:/Repository/Biso/Biso/data/weights.rda")
 
 
 #Mac
-#load("~/desktop/Repository/Biso/data/wave1.rda")
-#load("~/desktop/Repository/Biso/data/network.wave1.rda")
-#load("~/desktop/Repository/Biso/data/weights.rda")
+load("~/desktop/Repository/Biso/data/wave1.rda")
+load("~/desktop/Repository/Biso/data/network.wave1.rda")
+load("~/desktop/Repository/Biso/data/weights.rda")
 
 #Renamed
 wave1.data <- da21600.0001
@@ -191,9 +191,7 @@ density.weapon <- mydata.c %>%
   annotate("text", x = 3.2, y = 0.063, label = "Mean", color = "darkred") +
   coord_flip() +
   labs(title = "Density", y = "Proportion of Weapon Carriers", x = " ") +
-  scale_colour_pander() +
-  scale_fill_pander() +
-  theme_pander() + 
+  theme_igray() +
   theme(text = element_text(family = "Times"), plot.title = element_text(hjust = 0.5), legend.position = "none") 
 ```
 
@@ -221,9 +219,7 @@ centrality.weapon <- mydata.c %>%
   annotate("text", x = 3.2, y = 0.063, label = "Mean", color = "darkred") +
   coord_flip() +
   labs(title = "Centrality", y = "Proportion of Weapon Carriers", x = " ") +
-  scale_colour_pander() +
-  scale_fill_pander() +
-  theme_pander() + 
+  theme_igray() + 
   theme(text = element_text(family = "Times"), plot.title = element_text(hjust = 0.5), legend.position = "none") 
 ```
 
@@ -251,9 +247,7 @@ popularity.weapon <- mydata.c %>%
   annotate("text", x = 3.2, y = 0.063, label = "Mean", color = "darkred") +
   coord_flip() +
   labs(title = "Popularity", y = "Proportion of Weapon Carriers", x = " ") +
-  scale_colour_pander() +
-  scale_fill_pander() +
-  theme_pander() + 
+  theme_igray() +
   theme(text = element_text(family = "Times"), plot.title = element_text(hjust = 0.5), legend.position = "none") 
 ```
 
